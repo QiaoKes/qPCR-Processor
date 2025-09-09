@@ -1,0 +1,109 @@
+{
+    "sample_mapping": {
+        "P1": {
+            "1": "E01",
+            "2": "E02",
+            "3": "E03",
+            "4": "E04",
+            "5": "E05",
+            "6": "E06",
+            "7": "E07",
+            "8": "E08",
+            "9": "E09",
+            "10": "E10",
+            "11": "E11",
+            "12": "E12"
+        },
+        "P2": {
+            "1": "E13",
+            "2": "E14",
+            "3": "E15",
+            "4": "E16",
+            "5": "E17",
+            "6": "E18",
+            "7": "E19",
+            "8": "E20",
+            "9": "E21",
+            "10": "E22",
+            "11": "E23",
+            "12": "E24"
+        },
+        "P3": {
+            "1": "E13",
+            "2": "E14",
+            "3": "E15",
+            "4": "E16",
+            "5": "E17",
+            "6": "E18",
+            "7": "E19",
+            "8": "E20",
+            "9": "E21",
+            "10": "E22",
+            "11": "E23",
+            "12": "E24"
+        },
+        "P4": {
+            "1": "E13",
+            "2": "E14",
+            "3": "E15",
+            "4": "E16",
+            "5": "E17",
+            "6": "E18",
+            "7": "E19",
+            "8": "E20",
+            "9": "E21",
+            "10": "E22",
+            "11": "E23",
+            "12": "E24"
+        }
+    },
+    "reference_genes": [
+        "GAPDH",
+        "TBP"
+    ],
+    "error_threshold": 0.3,
+    "chart_layout": {
+        "start_col": 9,
+        "chart_width": 10,
+        "chart_height": 6,
+        "window_width": 15,
+        "window_height": 8,
+        "plot_area_left_margin": 0.01,
+        "bar_color": "4472C4",
+        "grid_line_color": "D3D3D3"
+    },
+    "_comments": {
+        "sample_mapping": "样本名称映射：按文件分组，支持不同文件中相同的Sample Name映射到不同的实验名。格式：{文件前缀: {Sample Name: Experiment Name}}。文件前缀来自文件名第一个空格前的部分，如'P1 2025-07-28 160758.xls'的前缀是'P1'",
+        "reference_genes": "参考基因列表，用于qPCR数据标准化计算，可添加更多参考基因如ACTB",
+        "error_threshold": "误差告警阈值：当标准差超过平均值的此倍数时显示告警（如0.3表示标准差>30%平均值时告警）",
+        "chart_layout": {
+            "description": "Excel中柱状图的布局配置参数",
+            "start_col": "图表起始列位置，Excel列号(G列=7)，控制图表显示在数据表的右侧第几列",
+            "chart_width": "图表内部绘图区域宽度，Excel单位，控制柱子和坐标轴的显示区域大小",
+            "chart_height": "图表内部绘图区域高度，Excel单位，控制柱子和坐标轴的显示区域大小",
+            "window_width": "图表外部窗口总宽度，Excel单位，包含标题、轴标签等所有元素的总宽度",
+            "window_height": "图表外部窗口总高度，Excel单位，包含标题、轴标签等所有元素的总高度",
+            "plot_area_left_margin": "绘图区域左边距比例(0-1)，数值越大绘图区域越靠右，为Y轴标题留出更多空间",
+            "bar_color": "柱状图颜色，十六进制颜色代码（如4472C4为蓝色，FF6B6B为红色，4ECDC4为青色）",
+            "grid_line_color": "网格线颜色，十六进制颜色代码（如D3D3D3为浅灰色，CCCCCC为中灰色）",
+            "current_layout_mode": "左表右图模式 - 图表固定显示在数据表右侧，每个Target Name对应一个图表"
+        }
+    },
+    "_comments_en": {
+        "sample_mapping": "Sample name mapping: grouped by file. The same Sample Name can map to different experiment names across different files. Format: {file_prefix: {Sample Name: Experiment Name}}. The file_prefix is the part before the first space in the filename (e.g., the prefix of 'P1 2025-07-28 160758.xls' is 'P1'). Note: experiment names in sample_mapping are anonymized as E01–E24.",
+        "reference_genes": "List of reference genes used for qPCR normalization; you may add more (e.g., ACTB).",
+        "error_threshold": "Error alert threshold: raise an alert when the standard deviation exceeds this multiple of the mean (e.g., 0.3 means alert if SD > 30% of the mean).",
+        "chart_layout": {
+            "description": "Layout parameters for bar charts in Excel.",
+            "start_col": "Starting column index of the chart (Excel column index, e.g., column G = 7); controls how many columns to the right of the data table the chart is placed.",
+            "chart_width": "Width of the plot area (Excel units); controls the space for bars and axes.",
+            "chart_height": "Height of the plot area (Excel units); controls the space for bars and axes.",
+            "window_width": "Total outer width of the chart window (Excel units), including title, axis labels, etc.",
+            "window_height": "Total outer height of the chart window (Excel units), including title, axis labels, etc.",
+            "plot_area_left_margin": "Left margin ratio (0–1) of the plot area; larger values push the plot area to the right to leave more space for the Y-axis title.",
+            "bar_color": "Bar color in hexadecimal (e.g., 4472C4 for blue, FF6B6B for red, 4ECDC4 for teal).",
+            "grid_line_color": "Grid line color in hexadecimal (e.g., D3D3D3 for light gray, CCCCCC for medium gray).",
+            "current_layout_mode": "Left-table-right-chart mode — charts are fixed to the right of the data table, one chart per Target Name."
+        }
+    }
+}
