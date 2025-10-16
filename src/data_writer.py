@@ -728,7 +728,7 @@ class DataWriter:
             # 设置Y轴（数值轴）
             chart.y_axis.title = f'Normalized to {reference_gene}'  # 恢复Y轴标题显示
             chart.y_axis.scaling.min = 0
-            chart.y_axis.number_format = '0.######'  # 自动去除无效的0
+            chart.y_axis.number_format = 'General'
             
             # 显示水平网格线，使用浅灰色
             from openpyxl.chart.axis import ChartLines
