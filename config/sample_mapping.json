@@ -61,6 +61,7 @@
         "GAPDH",
         "TBP"
     ],
+    "target_gene_order": ["AFP", "CXCR4", "FOXA2"],
     "error_threshold": 0.3,
     "chart_layout": {
         "start_col": 9,
@@ -75,6 +76,7 @@
     "_comments": {
         "sample_mapping": "样本名称映射：按文件分组，支持不同文件中相同的Sample Name映射到不同的实验名。格式：{文件前缀: {Sample Name: Experiment Name}}。文件前缀来自文件名第一个空格前的部分，如'P1 2025-07-28 160758.xls'的前缀是'P1'",
         "reference_genes": "参考基因列表，用于qPCR数据标准化计算，可添加更多参考基因如ACTB",
+        "target_gene_order": "目标基因输出顺序数组：定义Merge sheet中Target Name的排序顺序。数组中的基因按照数组顺序排序，不在数组中的基因按字母升序排序。如果数组为空或未填写，则使用默认逻辑：参考基因在前，其余基因按字母升序排序。示例：[\"GAPDH\", \"TBP\", \"Gene1\", \"Gene2\"]",
         "error_threshold": "误差告警阈值：当标准差超过平均值的此倍数时显示告警（如0.3表示标准差>30%平均值时告警）",
         "chart_layout": {
             "description": "Excel中柱状图的布局配置参数",
@@ -92,6 +94,7 @@
     "_comments_en": {
         "sample_mapping": "Sample name mapping: grouped by file. The same Sample Name can map to different experiment names across different files. Format: {file_prefix: {Sample Name: Experiment Name}}. The file_prefix is the part before the first space in the filename (e.g., the prefix of 'P1 2025-07-28 160758.xls' is 'P1'). Note: experiment names in sample_mapping are anonymized as E01–E24.",
         "reference_genes": "List of reference genes used for qPCR normalization; you may add more (e.g., ACTB).",
+        "target_gene_order": "Target gene output order array: Defines the sorting order of Target Names in Merge sheets. Genes in the array are sorted according to the array order, genes not in the array are sorted alphabetically in ascending order. If the array is empty or not filled, the default logic is used: reference genes first, other genes sorted alphabetically in ascending order. Example: [\"GAPDH\", \"TBP\", \"Gene1\", \"Gene2\"]",
         "error_threshold": "Error alert threshold: raise an alert when the standard deviation exceeds this multiple of the mean (e.g., 0.3 means alert if SD > 30% of the mean).",
         "chart_layout": {
             "description": "Layout parameters for bar charts in Excel.",
