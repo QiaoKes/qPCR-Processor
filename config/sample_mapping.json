@@ -61,7 +61,7 @@
         "GAPDH",
         "TBP"
     ],
-    "target_gene_order": ["AFP", "CXCR4", "FOXA2"],
+    "target_gene_order": [],
     "error_threshold": 0.3,
     "chart_layout": {
         "start_col": 9,
