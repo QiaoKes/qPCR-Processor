@@ -177,15 +177,15 @@ class DataProcessor:
         
         # 自定义排序：参考基因放在每个Sample Name分组的前面
         def custom_sort_key(row):
-            sample_name = row['Sample Name']
-            target_name = row['Target Name']
+            sample_name = str(row['Sample Name'])
+            target_name = str(row['Target Name'])
             
             # 为参考基因分配较小的排序值，使其排在前面
             if target_name in self.reference_genes:
-                ref_priority = self.reference_genes.index(target_name)
-                return (sample_name, 0, ref_priority)  # 参考基因优先级为0
+                ref_priority = str(self.reference_genes.index(target_name))
+                return (sample_name, '0', ref_priority)  # 参考基因优先级为0
             else:
-                return (sample_name, 1, target_name)  # 其他基因优先级为1
+                return (sample_name, '1', target_name)  # 其他基因优先级为1
         
         # 按自定义排序规则排序
         df_sorted = df.copy()
