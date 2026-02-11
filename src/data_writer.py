@@ -26,6 +26,7 @@ class DataWriter:
         self.config_path = config_path
         self.logger = logging.getLogger(__name__)
         self.reference_genes = ['GAPDH', 'TBP']  # 默认参考基因
+        self.target_gene_order = []  # 默认目标基因顺序数组（空数组表示按字母排序）
         self.error_threshold = 0.3  # 默认误差告警阈值
         
         # 加载配置文件获取参考基因和图表布局
@@ -34,6 +35,7 @@ class DataWriter:
                 with open(config_path, 'r', encoding='utf-8') as f:
                     config = json.load(f)
                     self.reference_genes = config.get('reference_genes', self.reference_genes)
+                    self.target_gene_order = config.get('target_gene_order', self.target_gene_order)
                     self.error_threshold = config.get('error_threshold', self.error_threshold)
                     self.chart_layout = config.get('chart_layout', {})
             except Exception as e:
@@ -282,14 +284,7 @@ class DataWriter:
             target_name = row['Target Name']
             data_source = row['Data Source']
             
-            # 为Target Name分配优先级：参考基因在前，其他基因在后
-            if target_name in self.reference_genes:
-                try:
-                    target_priority = self.reference_genes.index(target_name)
-                except ValueError:
-                    target_priority = 999
-            else:
-                target_priority = 1000 + hash(target_name) % 1000
+            target_priority = self._get_target_priority(target_name)
             
             # 数据源排序：P1, P2, P3...
             try:
@@ -363,6 +358,49 @@ class DataWriter:
         
         return result_df
     
+    def _get_target_priority(self, target_name: str) -> int:
+        """
+        获取Target Name的排序优先级
+        
+        Args:
+            target_name (str): 目标基因名称
+            
+        Returns:
+            int: 排序优先级，数值越小优先级越高
+        """
+        # 为Target Name分配优先级
+        if self.target_gene_order and len(self.target_gene_order) > 0:
+            # 优先参考基因
+            if target_name in self.reference_genes:
+                try:
+                    return self.reference_genes.index(target_name)
+                except ValueError:
+                    return 999
+
+            # 如果配置了目标基因顺序数组且数组不为空
+            if target_name in self.target_gene_order:
+                # 在数组中的基因，按数组顺序排序
+                return self.target_gene_order.index(target_name) + 100
+            else:
+                # 不在数组中的基因，按字母升序排序，排在数组基因之后
+                # 使用首字母在字母表中的位置来排序
+                first_char = target_name[0].upper() if target_name else 'Z'
+                char_position = ord(first_char) - ord('A') if first_char.isalpha() else 26
+                return len(self.target_gene_order) * 100 + char_position
+        else:
+            # 如果数组为空或未配置，参考基因在前，其他基因按字母顺序排列
+            if target_name in self.reference_genes:
+                try:
+                    return self.reference_genes.index(target_name)
+                except ValueError:
+                    return 999
+            else:
+                # 非参考基因，优先级设置为比参考基因大的值，这样会排在参考基因之后
+                # 使用首字母在字母表中的位置来排序
+                first_char = target_name[0].upper() if target_name else 'Z'
+                char_position = ord(first_char) - ord('A') if first_char.isalpha() else 26
+                return len(self.reference_genes) * 100 + char_position
+    
     def _check_error_warning(self, average_val, stdv_val) -> str:
         """
         检查误差是否超过阈值，返回告警信息
@@ -431,16 +469,7 @@ class DataWriter:
         def sort_key(row):
             target_name = row['Target Name']
             
-            # 为Target Name分配优先级：参考基因在前，其他基因在后
-            if target_name in self.reference_genes:
-                # 参考基因按配置文件中的顺序排序
-                try:
-                    target_priority = self.reference_genes.index(target_name)
-                except ValueError:
-                    target_priority = 999  # 如果不在列表中，排在最后
-            else:
-                # 其他基因按字母顺序排序，但排在参考基因之后
-                target_priority = 1000 + hash(target_name) % 1000
+            target_priority = self._get_target_priority(target_name)
             
             try:
                 # 尝试将Sample Name转换为数字进行排序
@@ -728,7 +757,7 @@ class DataWriter:
             # 设置Y轴（数值轴）
             chart.y_axis.title = f'Normalized to {reference_gene}'  # 恢复Y轴标题显示
             chart.y_axis.scaling.min = 0
-            chart.y_axis.number_format = '0.######'  # 自动去除无效的0
+            chart.y_axis.number_format = 'General'
             
             # 显示水平网格线，使用浅灰色
             from openpyxl.chart.axis import ChartLines
