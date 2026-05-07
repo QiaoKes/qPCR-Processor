@@ -77,29 +77,30 @@ class DataProcessor:
         if 'Experiment Name' not in df.columns:
             df['Experiment Name'] = df['Sample Name']
         
-        if self.sample_mapping and file_prefix:
-            # 处理嵌套结构的映射
-            if file_prefix in self.sample_mapping:
+        if self.sample_mapping:
+            mapping_dict = None
+            if file_prefix and file_prefix in self.sample_mapping:
                 mapping_dict = self.sample_mapping[file_prefix]
                 self.logger.info(f"使用文件 {file_prefix} 的专用映射")
+            elif all(not isinstance(value, dict) for value in self.sample_mapping.values()):
+                mapping_dict = self.sample_mapping
+                self.logger.info("使用全局样本映射")
+            
+            if mapping_dict is not None:
                 
                 # 创建一个能处理数字和字符串的映射函数
                 def safe_map(sample_name):
-                    # 先尝试直接映射
-                    if sample_name in mapping_dict:
-                        return mapping_dict[sample_name]
-                    # 尝试转换为字符串后映射
-                    str_sample = str(sample_name)
-                    if str_sample in mapping_dict:
-                        return mapping_dict[str_sample]
-                    # 如果是字符串，尝试转换为数字后再转回字符串映射
+                    candidate_keys = [sample_name, str(sample_name)]
                     try:
-                        if isinstance(sample_name, str):
-                            num_sample = str(int(float(sample_name)))
-                            if num_sample in mapping_dict:
-                                return mapping_dict[num_sample]
+                        numeric_sample = float(sample_name)
+                        if np.isfinite(numeric_sample) and numeric_sample.is_integer():
+                            candidate_keys.append(str(int(numeric_sample)))
                     except (ValueError, TypeError):
                         pass
+                    
+                    for candidate_key in candidate_keys:
+                        if candidate_key in mapping_dict:
+                            return mapping_dict[candidate_key]
                     return sample_name
                 
                 # 应用映射
@@ -116,9 +117,12 @@ class DataProcessor:
                     if mapped != sample:
                         self.logger.info(f"文件 {file_prefix} 映射示例: '{sample}' -> '{mapped}'")
             else:
-                self.logger.warning(f"未找到文件 {file_prefix} 的映射配置，保持原Sample Name作为Experiment Name")
+                if file_prefix:
+                    self.logger.warning(f"未找到文件 {file_prefix} 的映射配置，保持原Sample Name作为Experiment Name")
+                else:
+                    self.logger.warning("没有提供文件前缀且映射配置不是全局映射，保持原Sample Name作为Experiment Name")
         else:
-            self.logger.warning("没有提供文件前缀或映射配置为空，保持原Sample Name作为Experiment Name")
+            self.logger.warning("映射配置为空，保持原Sample Name作为Experiment Name")
             
         return df
     
@@ -133,6 +137,7 @@ class DataProcessor:
             pd.DataFrame: 处理后的数据
         """
         df = df.copy()
+        df['CT'] = df['CT'].astype(object)
         
         # 按Sample Name分组，然后在每个组内按Target Name处理
         grouped_by_sample = df.groupby('Sample Name')

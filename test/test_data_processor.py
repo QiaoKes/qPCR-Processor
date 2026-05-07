@@ -90,6 +90,31 @@ class TestDataProcessor(unittest.TestCase):
         self.assertEqual(mapped_data.loc[0, 'Experiment Name'], 'Experiment_A')
         self.assertEqual(mapped_data.loc[2, 'Experiment Name'], 'Experiment_B')
     
+    def test_apply_sample_mapping_numeric_sample_names(self):
+        """测试数字样本名能匹配字符串映射键"""
+        processor = DataProcessor()
+        processor.sample_mapping = {
+            'P1': {
+                '1': 'Experiment_1',
+                '2': 'Experiment_2',
+                'Control': 'Experiment_Control'
+            }
+        }
+        test_data = pd.DataFrame({
+            'Sample Name': [1.0, 1, '1', '2.0', 'Control', 3.0],
+            'Target Name': ['GAPDH'] * 6,
+            'CT': [20.0, 21.0, 22.0, 23.0, 24.0, 25.0]
+        })
+        
+        mapped_data = processor.apply_sample_mapping(test_data, file_prefix='P1')
+        
+        self.assertEqual(mapped_data.loc[0, 'Experiment Name'], 'Experiment_1')
+        self.assertEqual(mapped_data.loc[1, 'Experiment Name'], 'Experiment_1')
+        self.assertEqual(mapped_data.loc[2, 'Experiment Name'], 'Experiment_1')
+        self.assertEqual(mapped_data.loc[3, 'Experiment Name'], 'Experiment_2')
+        self.assertEqual(mapped_data.loc[4, 'Experiment Name'], 'Experiment_Control')
+        self.assertEqual(mapped_data.loc[5, 'Experiment Name'], 3.0)
+    
     def test_process_ct_values_all_undetermined(self):
         """测试全为Undetermined的CT值处理"""
         # 创建全为Undetermined的测试数据（同一样本的同一基因）
