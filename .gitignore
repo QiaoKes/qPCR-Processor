@@ -97,3 +97,5 @@ ipython_config.py
 Pipfile.lock
 
 # poetry
+*.xls
+*.xlsx
